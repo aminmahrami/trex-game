@@ -3,13 +3,27 @@ console.log("__::script_loaded::__");
 const dino = document.getElementById("dino");
 const cactus = document.getElementById("cactus");
 const scoreElement = document.getElementById("score");
+const backgroundAudio = document.getElementById("background-audio");
+const jumpAudio = document.getElementById("jump-audio");
+const gameoverAudio = document.getElementById("gameover-audio");
 
 let score = 0;
 scoreElement.innerHTML = `Score: ${score}`;
 
 let interval;
+let firstLoad = true;
 
 const jump = () => {
+	jumpAudio.play();
+
+	if (firstLoad) {
+		backgroundAudio.play();
+		cactus.classList.add("cactus-move");
+		checkAliveInterval();
+		firstLoad = false;
+	}
+
+	// Prevent jump, if already jumping
 	if (dino.classList.contains("jump")) {
 		return;
 	}
@@ -21,13 +35,17 @@ const jump = () => {
 const gameOver = () => {
 	cactus.classList.remove("cactus-move");
 	cactus.style.left = "50px";
+	backgroundAudio.pause();
+	gameoverAudio.play();
 
 	clearInterval(interval);
 
-	const shouldRestart = confirm("Gameover, restart?");
-	if (shouldRestart) {
-		restart();
-	}
+	setTimeout(() => {
+		const shouldRestart = confirm("Gameover, restart?");
+		if (shouldRestart) {
+			restart();
+		}
+	}, 500);
 };
 
 const isAlive = () => {
@@ -54,6 +72,7 @@ const restart = () => {
 	cactus.classList.add("cactus-move");
 	score = 0;
 	checkAliveInterval();
+	backgroundAudio.play();
 };
 
 document.addEventListener("keydown", () => jump());
@@ -63,5 +82,3 @@ const checkAliveInterval = () =>
 		() => (isAlive() ? increaseScore() : gameOver()),
 		10
 	));
-
-checkAliveInterval();
