@@ -13,6 +13,9 @@ scoreElement.innerHTML = `Score: ${score}`;
 let interval;
 let firstLoad = true;
 
+document.addEventListener("keydown", () => jump());
+document.addEventListener("click", () => jump());
+
 const jump = () => {
 	jumpAudio.play();
 
@@ -74,8 +77,6 @@ const restart = () => {
 	checkAliveInterval();
 	backgroundAudio.play();
 };
-
-document.addEventListener("keydown", () => jump());
 
 const checkAliveInterval = () =>
 	(interval = setInterval(
